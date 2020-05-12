@@ -40,21 +40,45 @@ const authRoutes = createAuthRoutes({
 app.use('/auth', authRoutes);
 
 // everything that starts with "/api" below here requires an auth token!
-app.use('/api', ensureAuth);
+app.use('/api/', ensureAuth);
 
-app.get('/api/todos', (req, res) => {
-  res.json({
-    message: `in this proctected route, we get the user's id like so: ${req.userId}`
-  });
-});
+// app.get('/api/todos', (req, res) => {
+//   res.json({
+//     message: `in this proctected route, we get the user's id like so: ${req.userId}`
+//   });
+// });
 
 
 
-app.get('/todos', async(req, res) => {
+app.get('/api/todos', async(req, res) => {
   const data = await client.query('SELECT * from todos');
 
   res.json(data.rows);
 });
+
+
+app.post('/api/todos', async(req, res) => {
+  const data = await client.query(`
+  INSERT INTO todos (task, user_id)
+  VALUES ($1, $2)
+  RETURNING *;
+  `, [req.body.task, req.userId]);
+
+  res.json(data.rows);
+});
+
+app.put('/api/todos/:id', async(req, res) => {
+  const data = await client.query(`
+  UPDATE todos
+  SET completed=true
+  WHERE id=$1 AND user_id=$2
+  RETURNING *;
+  `, [req.params.id, req.userId]);
+
+  res.json(data.rows);
+});
+
+
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

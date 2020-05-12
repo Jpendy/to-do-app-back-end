@@ -5,7 +5,7 @@
 1. Run `heroku create`
 1. Run `npm run setup-heroku` to create a heroku SQL database in the cloud to go with your heroku app.
 1. Run `heroku config:get DATABASE_URL` to get your heroku sql database url from the cloud. Put this in your .env file, under `DATABASE_URL`
-1. Run `npm run setup-db` 
+1. Run `npm run setup-db`
 1. Run `npm run start:watch` to start the dev server
 
 ## Adding auth routes and protecting routes:
@@ -42,12 +42,12 @@ const authRoutes = createAuthRoutes({
 // setup authentication routes to give user an auth token
 // creates a /signin and a /signup route. 
 // each requires a POST body with a .email and a .password
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 // everything that starts with "/api" below here requires an auth token!
-app.use('/auth', ensureAuth);
+app.use('/api', ensureAuth);
 
-app.get('/auth/test', (req, res) => {
+app.get('/api/test', (req, res) => {
     res.json({
         message: `in this proctected route, we get the user's id like so: ${req.userId}`
     });
