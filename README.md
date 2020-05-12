@@ -45,9 +45,9 @@ const authRoutes = createAuthRoutes({
 app.use('/auth', authRoutes);
 
 // everything that starts with "/api" below here requires an auth token!
-app.use('/api', ensureAuth);
+app.use('/auth', ensureAuth);
 
-app.get('/api/test', (req, res) => {
+app.get('/auth/test', (req, res) => {
     res.json({
         message: `in this proctected route, we get the user's id like so: ${req.userId}`
     });
