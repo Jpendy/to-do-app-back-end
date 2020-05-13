@@ -51,7 +51,11 @@ app.use('/api/', ensureAuth);
 
 
 app.get('/api/todos', async(req, res) => {
-  const data = await client.query('SELECT * from todos');
+  const data = await client.query(`
+  SELECT * from todos
+  WHERE user_id = $1
+  RETURNING *
+  `, [req.userId]);
 
   res.json(data.rows);
 });
